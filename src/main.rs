@@ -30,17 +30,26 @@ impl Default for App {
 
 impl eframe::App for App {
 	fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-		egui::CentralPanel::default().show(ctx, |ui| {
-			ui.heading(format!("Image: {}", self.image_name));
+		egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
+			ui.heading("woooopaint");
 			ui.horizontal(|ui| {
-				let label = ui.label("Change image name:");
+				let label = ui.label("Image name:");
 				ui.text_edit_singleline(&mut self.image_name).labelled_by(label.id);
 			});
-			if ui.button("Change Color").clicked() {
+		});
+		egui::SidePanel::left("side_panel").show(ctx, |ui| {
+			ui.heading("Tools");
+			ui.label("This is where the tools will go.");
+			// Color picker
+			ui.horizontal(|ui| {
+				let label = ui.label("Click to change foreground color:");
+				ui.color_edit_button_srgba(&mut self.color).labelled_by(label.id);
+			});
+			if ui.button("Randomize").clicked() {
 				self.color = egui::Color32::from_rgb(rand::random(), rand::random(), rand::random());
 			}
-			// Color picker
-			ui.color_edit_button_srgba(&mut self.color);
+		});
+		egui::CentralPanel::default().show(ctx, |ui| {
 			ui.image(egui::include_image!("../crimsoncode-sally.png"));
 		});
 	}
